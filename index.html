@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xingdou Fu (付 星斗) | Personal webpage</title>
+    <style>
+        /* --- 1. 基础全局样式 --- */
+        :root { --primary-color: #007bff; --text-color: #333; --bg-color: #ffffff; }
+        html { scroll-behavior: smooth; }
+        body { font-family: "Helvetica Neue", Arial, sans-serif; color: var(--text-color); line-height: 1.6; margin: 0; background: var(--bg-color); }
+        
+        /* --- 2. 新增：Banner 样式 --- */
+        .banner-container {
+width: 100%;
+    /* --- 关键修改 1：删除 height: 350px --- */
+    /* --- 关键修改 2：设定纵横比 --- */
+    aspect-ratio: 3840 / 600; /* 这里建议设为 3:1 左右，如果你的图更高，可以改成 3840/1600 */
+    
+    max-height: 500px; /* 设置一个最大高度，防止在大屏幕上占满全屏 */
+    min-height: 200px; /* 设置一个最小高度，防止在手机上缩得太小 */
+    
+    overflow: hidden;
+    position: relative;
+    background-color: #f0f0f0;
+        }
+        .banner-img {
+width: 100%;
+    height: 100%;
+    /* --- 关键修改 3：必须加这一行，保命符 --- */
+    object-fit: cover; 
+    object-position: center; /* 如果你想看图片上方，可以改为 center top */
+        }
+        .banner-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.2); /* 淡淡的暗层，让文字更清晰 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .banner-text { 
+            color: white; 
+            font-size: 2.8rem; 
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5); 
+            font-weight: bold;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        /* --- 3. 布局容器 --- */
+        .main-wrapper { max-width: 1000px; margin: 0 auto; padding: 40px 20px; display: flex; position: relative; }
+        .content-area { flex: 1; padding-right: 140px; }
+
+        /* --- 4. 导航栏 (电脑端固定，手机端吸顶) --- */
+        .side-nav {
+            position: fixed;
+            right: calc(50% - 480px); 
+            top: 100px;
+            width: 120px;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid #eee;
+            z-index: 2000;
+        }
+        .side-nav a {
+            text-decoration: none;
+            color: #888;
+            font-size: 14px;
+            padding: 10px 15px;
+            transition: 0.2s;
+            background: var(--bg-color);
+        }
+        .side-nav a:hover { color: var(--primary-color); background: #f9f9f9; }
+
+        /* --- 5. 通用章节与跳转偏移 --- */
+        section { margin-bottom: 60px; scroll-margin-top: 80px; } 
+        h2 { border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 30px; }
+
+        /* --- 6. 个人简介 --- */
+        .profile-header { display: flex; align-items: flex-start; gap: 40px; margin-bottom: 60px; }
+        .profile-pic { width: 280px; height: 280px; border-radius: 50%; object-fit: cover; box-shadow: 0 4px 15px rgba(0,0,0,0.1); flex-shrink:0}
+        .bio h1 { margin: 0 0 10px 0; font-size: 2.5rem; }
+        .social-links a { margin-right: 15px; text-decoration: none; color: var(--primary-color); font-weight: bold; }
+
+        /* --- 7. 论文与列表项样式 --- */
+        .paper-item { display: flex; gap: 20px; margin-bottom: 35px; }
+
+        .paper-gallery {
+            display: flex;
+            flex-wrap: wrap;     /* 核心：允许换行 */
+            gap: 15px;           /* 盒子之间的间距 */
+            width: 100%;
+            align-items: flex-start;
+        }
+
+        /* 2. 子容器（盒子）：不要限制它的宽度 */
+        .paper-preview {
+            height: 180px;       /* 统一盒子高度 */
+            flex: 0 1 auto;      /* 允许根据内容自动调整宽度，但不强制撑满 */
+            display: flex;       /* 让里面的图片也能正常对齐 */
+        }
+
+        /* 3. 图片本身：高度撑满盒子，宽度自动 */
+        .paper-preview img {
+            height: 100%;        /* 高度填满 180px 的盒子 */
+            width: auto;         /* 宽度按比例自适应 */
+            object-fit: contain; /* 确保科研 GIF 和图片内容完整 */
+            border-radius: 4px;
+            box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .paper-preview img:hover {
+            transform: scale(1.05);
+        }
+
+        .paper-info h4 { margin: 0 0 8px 0; font-size: 1.1rem; color: #111; }
+        .author-me { font-weight: bold; text-decoration: underline; }
+
+        /* --- 8. 【核心功能】通用折叠控制 --- */
+        .collapsible-list > *:nth-child(n+6) { display: none !important; }
+        .collapsible-list.expanded > * { display: flex !important; }
+        .collapsible-list.expanded li { display: list-item !important; }
+
+        .toggle-btn {
+            display: inline-block;
+            padding: 6px 20px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            background: #fff;
+            border-radius: 20px;
+            color: #666;
+            font-size: 13px;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+        .toggle-btn:hover { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+
+        /* --- 9. 响应式适配 --- */
+        @media (max-width: 1100px) {
+            .content-area { padding-right: 0; }
+            .side-nav {
+                position: sticky;
+                top: 0;
+                flex-direction: row;
+                width: 100%;
+                justify-content: center;
+                border-left: none;
+                border-bottom: 1px solid #eee;
+                background: rgba(255,255,255,0.95);
+                backdrop-filter: blur(10px);
+                margin-bottom: 30px;
+                order: -1; 
+                padding: 10px 0;
+            }
+            .main-wrapper { flex-direction: column; padding-top: 0; }
+            /* 手机端 Banner 高度减小 */
+            .banner-container { height: 180px; }
+            .banner-text { font-size: 1.5rem; }
+        }
+        @media (max-width: 650px) {
+            .profile-header { flex-direction: column; text-align: center; align-items: center; gap: 20px;}
+            .paper-item { flex-direction: column; }
+            .paper-preview { width: 100%; height: auto; aspect-ratio: 16/9; }
+ 	     .paper-pic { width: 150px; height: 150px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="banner-container">
+        <img src="images/Header2_4K.png" alt="Banner" class="banner-img">
+        <div class="banner-overlay">
+            <div class="banner-text"></div>
+        </div>
+    </div>
+
+    <div class="main-wrapper">
+        <nav class="side-nav">
+            <a href="#about">About</a>
+            <a href="#news">News</a>
+            <a href="#pubs">Publications</a>
+            <a href="#cars">Career</a>
+            <a href="#edu">Education</a>
+            <a href="#contact">Contact</a>
+        </nav>
+
+        <div class="content-area">
+            <section id="about" class="profile-header">
+                <img src="images/profileCVPR2010B.jpg" alt="Your Name" class="profile-pic">
+                <div class="bio">
+                    <h1>Xingdou Fu (付 星斗)</h1>
+                    <p>Chief Technology Specialist at the OMRON · HUST · UIUC · Computer Vision/Robot Vision/AI</p>
+<p>
+Xingdou is the Chief Technology Specialist at the OMRON Innovation Center in Kyoto, Japan, where he leads R&D, strategic planning, and international collaborations in 3D sensing and robot vision. With over 11 years of experience at OMRON, he has focused on both basic and applied research in 3D sensors, active vision, pose estimation, and SLAM. His work has led to several patents and contributed to innovative products and prototypes across factory automation, healthcare, and driver monitoring systems. Xingdou obtained his Ph.D. in Computer Vision in 2009 from Huazhong University of Science and Technology, with joint training at the University of Illinois Urbana-Champaign. Before joining OMRON, he held various academic positions in Hong Kong SAR and Japan, focusing on areas such as gaze estimation and 3D endoscopic scanning.
+</p>
+                    <div class="social-links">
+                        <a href="#">Google Scholar</a>
+                        <a href="#">GitHub</a>
+                        <a href="#">Linkedin</a>
+                        <a href="#">Facebook</a>
+                        <a href="#">Email</a>
+                    </div>
+                </div>
+            </section>
+
+            <section id="news">
+                <h2>News</h2>
+                <ul id="news-list" class="collapsible-list">
+                    <li><strong>[2025.03]</strong> Invited speaker at IROS2025 workshop RGMCW！<a href="https://sites.google.com/view/iros2025-bench-competitions/">Detail</a></li>
+                    <li><strong>[2024.02]</strong> A paper accpeted by IROS2024。</li>
+                    <li><strong>[2023.01]</strong> A visit to Prof.Weiwei Wan at Harada lab in Osaka University</li>
+                    <li><strong>[2024.11]</strong> Two patents approved</li>
+                    <li><strong>[2010.12]</strong> A paper accepted by CVPR 2010</li>
+
+                </ul>
+                <div style="text-align: center;"><span class="toggle-btn" onclick="genericToggle('news-list', this)">Show More ↓</span></div>
+            </section>
+
+            <section id="pubs">
+                <h2>Selected Projects(Publications/Patents)</h2>
+                <div id="paper-list" class="collapsible-list">
+
+                    <div class="paper-item">
+                        <div class="paper-info">
+                            <h4>[2007-2008] Multi-Camera 3D Facial Motion Capture</h4>
+                            <p><span class="author-me">Xingdou Fu</span>, Yuxiao Hu, Hao Tang, Under supervision of Prof.Thomas Huang<br>
+	                			IFP Lab, University of Illinois Urbana-Champaign, USA<br>
+                                <a href="url_destination">Project website</a>&nbsp;&nbsp;<a href="url_destination">Paper</a>
+                            </p>
+                            <div class="paper-gallery">
+                                        <div class="paper-preview"><img src="images/Prj_3DFace_AllAngles.jpg"></div>
+                                        <div class="paper-preview"><img src="images/Prj_3DFace_FinalResult.gif"></div>
+                                        <div class="paper-preview"><img src="images/TrackSmallL.gif"></div>
+                                        <div class="paper-preview"><img src="images/TrackSmallR.gif"></div>
+                            </div>
+                            <p>This project aims to build a prototype system to capture the 3D motion of key facial feature points for constructing a feature-based 3D facial motion database, supporting future 3D expression recognition research. The captured data can also be used to drive a 3D face model for realistic facial animation.
+
+                            The system uses five synchronized cameras arranged in a semicircle to form four stereo vision pairs for full-face 3D measurement. Colored markers are placed on predefined facial points. Each stereo pair performs dynamic 3D reconstruction within its region, and all data are unified in a global coordinate system.
+
+                            Markers are assigned unique IDs and tracked across frames using the CamShift algorithm. Epipolar constraints are applied to verify tracking consistency and improve robustness.</p>
+                        </div>
+                    </div>
+
+
+                    <div class="paper-item">
+                        <div class="paper-info">
+                            <h4>[2009-2010] Reconstruction of Display and Eyes from a Single Image</h4>
+                            <p>Dirk Schnieders,<span class="author-me">Xingdou Fu</span> Under supervision of Prof.Kwan-Yee K. Wong<br>
+	                			Vision group, The University of Hong Kong (HKU), Hong Kong SAR<br>
+                                Accepted by The Twenty-Third IEEE Conference on Computer Vision and Pattern Recognition <strong>(CVPR 2010)</strong><br>
+                                <a href="url_destination">Project website</a>&nbsp;&nbsp;<a href="https://i.cs.hku.hk/~kykwong/publications/dschnieders_cvpr2010.pdf">Paper(CVPR 2010)</a>
+                            </p>
+                            <div class="paper-gallery">
+                                        <div class="paper-preview"><img src="images/Prj_EyeGaze_GerneralEyes.jpg"></div>
+                                        <div class="paper-preview"><img src="images/Prj_EyeGaze_GerneralFigure.jpg"></div>
+                                        <div class="paper-preview"><img src="images/Prj_EyeGaze_DetailFigure1.jpg"></div>
+                                        <div class="paper-preview"><img src="images/Prj_EyeGaze_DetailFigure2.jpg"></div>
+                                        <div class="paper-preview"><img src="images/Prj_EyeGaze_Experiment.jpg"></div>                                     
+                            </div>
+                            <p>This paper introduces a novel method for reconstructing human eyes and visual display from reflections on the cornea. This problem is difficult because the camera is not directly facing the display, but instead captures the eyes of a person in front of the display. Reconstruction of eyes and display is useful for point-of-gaze estimation, which can be approximated from the 3D positions of the iris and display. It is shown that iris boundaries (limbus) and display reflections in a single intrinsically calibrated image provide enough information for such an estimation. The proposed method assumes a simplified geometric eyeball model with certain anatomical constants which are used to reconstruct the eye. A noise performance analysis shows the sensitivity of the proposed method to imperfect data. Experiments on various subjects show that it is possible to determine the approximate area of gaze on a display from a single image.</p>
+                        </div>
+                    </div>
+                    
+                    
+
+
+                </div>
+                
+
+
+                <div style="text-align: center;"><span class="toggle-btn" onclick="genericToggle('paper-list', this)">Show More ↓</span></div>
+            </section>
+
+            <section id="cars">
+                <h2>Career</h2>
+
+                <p>
+    2020.4-Now as Chief Technology Specialist at <br>	
+	OMRON Corporation 	<br>
+	Kyoto, Japan 619-0225<br></p>
+
+    <p>
+    2014.7-2020.3 as Senior Researcher at <br>	
+	OMRON Corporation 	<br>
+	Kyoto, Japan 619-0225<br></p>
+
+    <p>
+    2011.6-2013.6 as Assistant Professor at <br>	
+	Computer Vision Group 	<br>
+	Kagoshima University 	<br>
+	Kagoshima, Japan 890-0065<br> </p>
+
+                <p>
+    2009.9-2010.9 as Postdoc Research Fellow at <br>	
+	Computer Vision Group 	<br>
+	The University of Hong Kong 	<br>
+	Hong Kong SAR, China 	<br> </p>
+
+	2004.9-2009.6 as Research Assistant at 	<br>
+	National Numerical Control System Engineering Research Center 	<br>
+	Huazhong University of Science and Technology 	<br>
+	Wuhan, Hubei province China 430074 	<br> </p>
+
+	2007.9-2008.9 as Visiting Research Assistant at <br>	
+	Image Formation and Processing Group 	<br>
+	Beckman Institute 	<br>
+	University of Illinois at Urbana and Champaign 	<br>
+	Urbana, IL USA 61801 	<br></p>
+
+	2001.9-2004.7 as Research Assistant at 	<br>
+	Zondy Cyber 	<br>
+	Information Engineering School 	<br>
+	China University of Geosciences 	<br>
+	Wuhan, Hubei province China 430074<br>
+                </p>
+
+            </section>
+
+            <section id="edu">
+                <h2>Education</h2>
+ 	Ph.D. (Sept, 2004-June, 2009)<br> 	
+	<strong>Huazhong University of Science and Technology, China</strong><br>	
+	Major: Computer vision 	<br>
+	Advisor: Prof. Pingjiang Wang, Prof. Xiaoqi Tang Prof. Jihong Chen 	<br>
+	Joint training (Sept, 2007-Sept, 2008) with 	<br>
+	<strong>University of Illinois at Urbana-Champaign, USA</strong> 	<br>
+	Major: Computer vision 	<br>
+	Advisor: Prof. Thomas Huang<br>
+            </section>
+
+            <section id="contact">
+                <h2>Contact</h2>
+                <p>Email: write2fxd@gmail.com</p>
+                <p>Office: OMRON Corporation, Kyoto, Japan</p>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        function genericToggle(listId, btn) {
+            var list = document.getElementById(listId);
+            if (list.classList.contains("expanded")) {
+                list.classList.remove("expanded");
+                btn.innerHTML = "Show More ↓";
+                list.previousElementSibling.scrollIntoView({behavior: 'smooth'});
+            } else {
+                list.classList.add("expanded");
+                btn.innerHTML = "Show Less ↑";
+            }
+        }
+    </script>
+</body>
+</html>
