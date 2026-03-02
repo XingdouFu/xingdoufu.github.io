@@ -1,2 +1,2 @@
-# xingdoufu.github.io
-My personal website : Xingdou.fu.github.io
+# My personal website
+[https://xingdoufu.github.io](https://xingdoufu.github.io)
