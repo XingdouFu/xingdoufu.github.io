@@ -117,6 +117,22 @@ width: 100%;
         .paper-info h4 { margin: 0 0 8px 0; font-size: 1.1rem; color: #111; }
         .author-me { font-weight: bold; text-decoration: underline; }
 
+
+                /* visitor map */
+        .visitor-map-wrapper {
+            width: 100%;
+            max-width: 900px;
+            margin: 30px auto 0 auto;
+            text-align: center;
+        }
+
+        .visitor-map-wrapper iframe {
+            max-width: 100% !important;
+        }
+
+
+
+
         /* --- 8. 【核心功能】通用折叠控制 --- */
         .collapsible-list > *:nth-child(n+6) { display: none !important; }
         .collapsible-list.expanded > * { display: flex !important; }
@@ -163,7 +179,7 @@ width: 100%;
             .paper-item { flex-direction: column; }
             .paper-preview { width: 100%; height: auto; aspect-ratio: 16/9; }
  	     .paper-pic { width: 150px; height: 150px; }
-        }
+             .visitor-map-wrapper {max-width: 100%;}
     </style>
 </head>
 <body>
@@ -179,7 +195,7 @@ width: 100%;
         <nav class="side-nav">
             <a href="#about">About</a>
             <a href="#news">News</a>
-            <a href="#pubs">Publications</a>
+            <a href="#pubs">Projects（Publications/Patents)</a>
             <a href="#cars">Career</a>
             <a href="#edu">Education</a>
             <a href="#contact">Contact</a>
@@ -191,15 +207,15 @@ width: 100%;
                 <div class="bio">
                     <h1>Xingdou Fu (付 星斗)</h1>
                     <p><strong>Chief Technology Specialist at the OMRON <br> Computer Vision/Robot Vision/AI</strong></p>
-<p>
-I work as a Chief Technology Specialist at the OMRON Innovation Center in Kyoto, Japan, leading R&D and strategic initiatives in 3D sensing and robot vision. What motivates me is staying at the forefront of research and translating cutting-edge ideas into real-world products.<br></p>
+                    <p>
+                    I work as a Chief Technology Specialist at the OMRON Innovation Center in Kyoto, Japan, leading R&D and strategic initiatives in 3D sensing and robot vision. What motivates me is staying at the forefront of research and translating cutting-edge ideas into real-world products.<br></p>
 
-<p>Over the past 11 years at OMRON, I have worked on both fundamental and applied research in 3D sensors, active vision, pose estimation, and SLAM. My work has resulted in several patents and contributed to innovative products in factory automation, healthcare, and driver monitoring systems.<br>
+                    <p>Over the past 11 years at OMRON, I have worked on both fundamental and applied research in 3D sensors, active vision, pose estimation, and SLAM. My work has resulted in several patents and contributed to innovative products in factory automation, healthcare, and driver monitoring systems.<br>
 
-I received my Ph.D. in Computer Vision from Huazhong University of Science and Technology in 2009, with joint training at the University of Illinois Urbana-Champaign. <br>
+                    I received my Ph.D. in Computer Vision from Huazhong University of Science and Technology in 2009, with joint training at the University of Illinois Urbana-Champaign. <br>
 
-Before joining OMRON, I held academic positions in Hong Kong SAR and Japan, focusing on gaze estimation and 3D endoscopic scanning.<br>
-</p>
+                    Before joining OMRON, I held academic positions in Hong Kong SAR and Japan, focusing on gaze estimation and 3D endoscopic scanning.<br>
+                    </p>
                     <div class="social-links">
                         <a href="#">Google Scholar</a>
                         <a href="#">GitHub</a>
@@ -381,8 +397,39 @@ The project focuses on a specialized projector calibration for structured light 
                 <p>Email: write2fxd@gmail.com</p>
                 <p>Office: OMRON Corporation, Kyoto, Japan</p>
             </section>
+
+
+
+
+            <section id="visitmap">
+                <h2>Global Visitors</h2>
+
+                <div class="visitor-map-wrapper">
+                    <script type="text/javascript" id="mapmyvisitors"
+                        src="https://mapmyvisitors.com/map.js?d=Eshhsa37l1H_Glc26a6fWX4P2GWvS6UpquAUrkGWJjY&cl=ffffff&w=a">
+                    </script>
+                </div>
+            </section>
+
+
+
+
+
+            
         </div>
     </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
     <script>
         function genericToggle(listId, btn) {
