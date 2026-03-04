@@ -121,13 +121,18 @@ width: 100%;
                 /* visitor map */
         .visitor-map-wrapper {
             width: 100%;
-            max-width: 900px;
             margin: 30px auto 0 auto;
             text-align: center;
         }
 
+        /* override ANY injected width */
+        .visitor-map-wrapper > div {
+            width: 100% !important;
+        }
+
         .visitor-map-wrapper iframe {
-            max-width: 100% !important;
+            width: 100% !important;
+            height: auto !important;
         }
 
 
@@ -405,9 +410,9 @@ The project focuses on a specialized projector calibration for structured light 
                 <h2>Global Visitors</h2>
 
                 <div class="visitor-map-wrapper">
-                    <script type="text/javascript" id="mapmyvisitors"
-                        src="https://mapmyvisitors.com/map.js?d=Eshhsa37l1H_Glc26a6fWX4P2GWvS6UpquAUrkGWJjY&cl=ffffff&w=a">
-                    </script>
+
+                    <script type="text/javascript" id="mapmyvisitors" src="//mapmyvisitors.com/map.js?d=Eshhsa37l1H_Glc26a6fWX4P2GWvS6UpquAUrkGWJjY&cl=ffffff&w=a"></script>
+
                 </div>
             </section>
 
